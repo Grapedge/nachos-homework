@@ -261,7 +261,7 @@ void AddrSpace::ReplacePage(int badVAddr)
     pageTable[newPage].valid = TRUE;
     pageTable[newPage].dirty = FALSE;
     pageTable[newPage].readOnly = FALSE;
-    printf("物理内存信息：%s, %d\n", machine->mainMemory, pageTable[newPage].physicalPage);
+    printf("物理内存信息：%s, %d\n", machine->mainMemory[pageTable[newPage].physicalPage], machine->mainMemory[pageTable[newPage].physicalPage]);
     // 读取数据到内存
     executable->ReadAt(&(machine->mainMemory[pageTable[newPage].physicalPage]), PageSize, newPage * PageSize);
     Print();
