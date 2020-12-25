@@ -93,7 +93,7 @@ AddrSpace::AddrSpace(OpenFile *executable)
     // 初始大小需要：代码大小 + 需要初始化的数据大小
     frames = divRoundUp(noffH.code.size + noffH.initData.size, PageSize);
 
-    unsigned int numFrames = max(NumPhysPages, frames);
+    unsigned int numFrames = min(NumPhysPages, frames);
 
     ASSERT(numFrames <= freeMap->NumClear()); // check we're not trying
                                               // to run anything too big --
@@ -118,7 +118,6 @@ AddrSpace::AddrSpace(OpenFile *executable)
     for (; i < numPages; i++)
     {
         pageTable[i].virtualPage = i;
-        pageTable[i].physicalPage = -1;
         pageTable[i].valid = FALSE;
         pageTable[i].use = FALSE;
         pageTable[i].dirty = FALSE;
