@@ -98,22 +98,6 @@ void FileHeader::Deallocate(BitMap *freeMap)
 }
 
 //----------------------------------------------------------------------
-// FileHeader::Deallocate
-// 	De-allocate all the space allocated for data blocks for this file.
-//
-//	"freeMap" is the bit map of free disk sectors
-//----------------------------------------------------------------------
-
-void FileHeader::Deallocate(BitMap *freeMap)
-{
-    for (int i = 0; i < numSectors; i++)
-    {
-        ASSERT(freeMap->Test((int)dataSectors[i])); // ought to be marked!
-        freeMap->Clear((int)dataSectors[i]);
-    }
-}
-
-//----------------------------------------------------------------------
 // FileHeader::FetchFrom
 // 	Fetch contents of file header from disk.
 //
