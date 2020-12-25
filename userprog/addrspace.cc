@@ -62,10 +62,8 @@ AddrSpace::AddrSpace(OpenFile *executable)
 {
     // 生成空间 ID
     spaceID = -1;
-    printf("测试：%d %d %d\n", spaceID, NumPhysPages, spaceID < 0);
-    for (int i = 0; i < NumPhysPages && spaceID < 0; i++)
+    for (int i = 0; i < NumPhysPages && spaceID == -1; i++)
     {
-        printf("Procs[%d] = %d\n", i, procs[i]);
         if (!procs[i])
         {
             procs[i] = 1;
