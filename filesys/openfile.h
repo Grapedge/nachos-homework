@@ -23,8 +23,8 @@
 #include "copyright.h"
 #include "utility.h"
 
-#ifdef FILESYS_STUB // Temporarily implement calls to
-										// Nachos file system as calls to UNIX!
+#ifdef FILESYS_STUB // Temporarily implement calls to       \
+										// Nachos file system as calls to UNIX! \
 										// See definitions listed under #else
 class OpenFile
 {
@@ -38,7 +38,6 @@ public:
 
 	int ReadAt(char *into, int numBytes, int position)
 	{
-		printf("文件信息 %d %d\n", file, position);
 		Lseek(file, position, 0);
 		return ReadPartial(file, into, numBytes);
 	}

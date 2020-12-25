@@ -109,12 +109,10 @@ int OpenFile::Write(char *into, int numBytes)
 
 int OpenFile::ReadAt(char *into, int numBytes, int position)
 {
-    puts("读取");
     int fileLength = hdr->FileLength();
     int i, firstSector, lastSector, numSectors;
     char *buf;
 
-    printf("读取文件，%d，文件长度\n", position, fileLength);
     if ((numBytes <= 0) || (position >= fileLength))
         return 0; // check request
     if ((position + numBytes) > fileLength)

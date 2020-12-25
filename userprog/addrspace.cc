@@ -256,10 +256,9 @@ void AddrSpace::ReplacePage(int badVAddr)
     DEBUG('v', "[页面置换] 换出：%d，换入：%d\n", toReplace, newPage);
     // 将换出的页面写回硬盘
     WriteBack(toReplace);
-    puts("写会");
     pageTable[toReplace].valid = FALSE;
     pageTable[newPage].physicalPage = pageTable[toReplace].physicalPage;
-    // pageTable[toReplace].physicalPage = -1;
+    pageTable[toReplace].physicalPage = -1;
     pageTable[newPage].valid = TRUE;
     pageTable[newPage].dirty = FALSE;
     pageTable[newPage].readOnly = FALSE;
@@ -270,12 +269,8 @@ void AddrSpace::ReplacePage(int badVAddr)
     // }
     // puts("");
     // 读取数据到内存
-    puts("读取");
-    printf("位置：%d\n", pageTable[newPage].physicalPage);
     machine->mainMemory + pageTable[newPage].physicalPage;
-    puts("尝试访问结束");
     executable->ReadAt(machine->mainMemory + pageTable[newPage].physicalPage, PageSize, newPage * PageSize);
-    puts("读取结束");
     Print();
 }
 
