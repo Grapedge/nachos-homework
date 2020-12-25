@@ -94,7 +94,7 @@ AddrSpace::AddrSpace(OpenFile *executable)
     frames = divRoundUp(noffH.code.size + noffH.initData.size, PageSize);
 
     DEBUG('v', "该程序需要：%d 个必须帧，需要 %d 个分页，如无虚拟内存仅支持到：%d 个分页\n", frames, numPages, NumPhysPages);
-    unsigned int numFrames = min(MaxNumPhysPages, frames + 1);
+    unsigned int numFrames = max(MaxNumPhysPages, frames + 1);
 
     ASSERT(numFrames <= freeMap->NumClear()); // check we're not trying
                                               // to run anything too big --
@@ -259,6 +259,7 @@ void AddrSpace::ReplacePage(int badVAddr)
     pageTable[newPage].valid = TRUE;
     pageTable[newPage].dirty = FALSE;
     pageTable[newPage].readOnly = FALSE;
+    printf("位置：%d %d\n", newPage, newPage * PageSize);
     // 读取数据到内存
     executable->ReadAt(&(machine->mainMemory[pageTable[newPage].physicalPage]), PageSize, newPage * PageSize);
     // Print();
@@ -270,6 +271,7 @@ void AddrSpace::WriteBack(int page)
     if (pageTable[page].dirty)
     {
         DEBUG('v', "页面 %d 被修改，写回磁盘\n", page);
+
         executable->WriteAt(&(machine->mainMemory[pageTable[page].physicalPage]), PageSize, page * PageSize);
     }
 }
