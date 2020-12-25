@@ -92,6 +92,8 @@ AddrSpace::AddrSpace(OpenFile *executable)
 
     // 初始大小需要：代码大小 + 需要初始化的数据大小
     frames = divRoundUp(noffH.code.size + noffH.initData.size, PageSize);
+    
+    unsigned int numFrames = max(MaxNumPhysPages, frames + 1);
 
     ASSERT(numPages <= NumPhysPages && numFrams <= freeMap->NumClear()); // check we're not trying
                                                                          // to run anything too big --
@@ -102,7 +104,6 @@ AddrSpace::AddrSpace(OpenFile *executable)
           numPages, size);
     // first, set up the translation
     pageTable = new TranslationEntry[numPages];
-    unsigned int numFrames = max(MaxNumPhysPages, frames + 1);
     // 只初始化相应数量的
     for (i = 0; i < numFrams; i++)
     {
