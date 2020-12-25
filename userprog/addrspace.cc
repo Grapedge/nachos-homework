@@ -271,6 +271,9 @@ void AddrSpace::ReplacePage(int badVAddr)
     // puts("");
     // 读取数据到内存
     puts("读取");
+    printf("位置：%d\n", pageTable[newPage].physicalPage);
+    machine->mainMemory + pageTable[newPage].physicalPage;
+    puts("尝试访问结束");
     executable->ReadAt(machine->mainMemory + pageTable[newPage].physicalPage, PageSize, newPage * PageSize);
     puts("读取结束");
     Print();
