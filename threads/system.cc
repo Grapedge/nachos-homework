@@ -29,6 +29,8 @@ SynchDisk *synchDisk;
 
 #ifdef USER_PROGRAM // requires either FILESYS or FILESYS_STUB
 Machine *machine;   // user program memory and registers
+BitMap *freeMap;
+bool procs[NumPhysPages];
 #endif
 
 #ifdef NETWORK
