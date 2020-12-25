@@ -263,7 +263,6 @@ void AddrSpace::ReplacePage(int badVAddr)
     WriteBack(oldPage);
     pageTable[oldPage].valid = FALSE;
     pageTable[newPage].physicalPage = pageTable[oldPage].physicalPage;
-    pageTable[oldPage].physicalPage = -1;
     pageTable[newPage].valid = TRUE;
     pageTable[newPage].dirty = FALSE;
     pageTable[newPage].readOnly = FALSE;
