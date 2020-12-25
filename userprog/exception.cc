@@ -159,7 +159,7 @@ void ExceptionHandler(ExceptionType which)
         break;
     default:
         printf("Unexpected user mode exception %d %d\n", which, type);
-        // ASSERT(FALSE);
+        ASSERT(FALSE);
         break;
     }
 }
