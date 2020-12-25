@@ -2,5 +2,5 @@
 
 int main()
 {
-  Exec("../test/halt.noff");
+  Halt();
 }
