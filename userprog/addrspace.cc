@@ -207,7 +207,7 @@ void AddrSpace::Print()
     puts("逻辑页号\t物理页号\t是否有效\t是否修改\t是否使用");
     for (int i = 0; i < numPages; i++)
     {
-        printf("%d\t%d\t%d\t%d\t%d\t", pageTable[i].virtualPage, pageTable[i].physicalPage, pageTable[i].valid, pageTable[i].dirty, pageTable[i].use);
+        printf("%d\t%d\t%d\t%d\t%d\t\n", pageTable[i].virtualPage, pageTable[i].physicalPage, pageTable[i].valid, pageTable[i].dirty, pageTable[i].use);
     }
-    puts("\n=================================================");
+    puts("=================================================");
 }
