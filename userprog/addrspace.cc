@@ -129,6 +129,7 @@ AddrSpace::AddrSpace(OpenFile *executable)
     // 用于模拟物理内存，machine 是全局变量
     bzero(machine->mainMemory, size);
 
+    printf("内存大小: %d\n", size);
     // 初始化数据段装入
     if (noffH.code.size > 0)
     {
