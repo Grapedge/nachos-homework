@@ -101,7 +101,7 @@ void SysCallExit()
             break;
         }
     }
-    printf("【用户程序】退出：%s\n", str);
+    printf("【用户程序】退出：%s\n", addr);
     currentThread->Finish();
 }
 
