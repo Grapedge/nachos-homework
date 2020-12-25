@@ -73,7 +73,7 @@ void SysCallExec()
 }
 
 // 处理系统调用：打印
-void SysCallPrint()
+void SysCallPuts()
 {
     char str[200];
     int addr = machine->ReadRegister(4);
@@ -86,6 +86,16 @@ void SysCallPrint()
         }
     }
     printf("用户程序打印：%s\n", str);
+}
+
+// 处理系统调用：退出
+void SysCallExit()
+{
+    int status;
+    int addr = machine->ReadRegister(4);
+    machine->ReadMem(addr, sizeof(int), &status);
+    printf("用户程序退出：%d\n", status);
+    currentThread->Finish();
 }
 
 // 处理缺页错误
@@ -146,7 +156,12 @@ void ExceptionHandler(ExceptionType which)
             break;
         case SC_Puts:
             DEBUG('a', "执行系统调用: Print");
-            SysCallPrint();
+            SysCallPuts();
+            AdvancePC();
+            break;
+        case SC_Exit:
+            DEBUG('a', "执行系统调用: Exit");
+            SysCallExit();
             AdvancePC();
             break;
         default:
