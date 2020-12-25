@@ -93,7 +93,8 @@ AddrSpace::AddrSpace(OpenFile *executable)
     // 初始大小需要：代码大小 + 需要初始化的数据大小
     frames = divRoundUp(noffH.code.size + noffH.initData.size, PageSize);
 
-    unsigned int numFrames = min(NumPhysPages, frames);
+    DEBUG('v', "该程序需要：%d 个必须帧，需要 %d 个分页，如无虚拟内存仅支持到：%d 个分页\n", frames, numPages, NumPhysPages);
+    unsigned int numFrames = min(MaxNumPhysPages, frames + 1);
 
     ASSERT(numFrames <= freeMap->NumClear()); // check we're not trying
                                               // to run anything too big --
@@ -260,7 +261,7 @@ void AddrSpace::ReplacePage(int badVAddr)
     pageTable[newPage].readOnly = FALSE;
     // 读取数据到内存
     executable->ReadAt(&(machine->mainMemory[pageTable[newPage].physicalPage]), PageSize, newPage * PageSize);
-    Print();
+    // Print();
 }
 
 void AddrSpace::WriteBack(int page)
