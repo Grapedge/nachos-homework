@@ -180,9 +180,10 @@ void FileHeader::Print()
         printf("文件大小: %d.  文件直接索引:\n", numBytes);
         for (i = 0; i < NumDirect - 1; i++)
             printf("%d ", dataSectors[i]);
-        printf("\n文件二级索引扇区编号：%d ", dataSectors[NumDirect - 1]);
+        printf("\n文件二级索引扇区编号：%d\n", dataSectors[NumDirect - 1]);
         for (i = 0; i < numSectors - NumDirect + 1; i++)
             printf("%d ", dataSectors2[i]);
+        puts("");
     }
     delete[] data;
 }
@@ -206,7 +207,6 @@ bool FileHeader::SetLength(BitMap *freeMap, int size)
         {
             dataSectors[NumDirect - 1] = freeMap->Find();
             int dataSectors2[NumIndirect];
-            printf("Start %d\n", numSectors - NumDirect);
             for (int i = 0; i < numSectors - NumDirect + 1; i++)
                 dataSectors2[i] = freeMap->Find();
             //将二级索引保存

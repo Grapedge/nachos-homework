@@ -230,12 +230,12 @@ void Append(char *from, char *to, int half)
     while ((amountRead = fread(buffer, sizeof(char), TransferSize, fp)) > 0)
     {
         int result;
-        // printf("start value: %d,  amountRead %d, ", start, amountRead);
-        //	result = openFile->WriteAt(buffer, amountRead, start);
+        printf("start value: %d,  amountRead %d, ", start, amountRead);
+        // result = openFile->WriteAt(buffer, amountRead, start);
         result = openFile->Write(buffer, amountRead);
         // printf("result of write: %d\n", result);
         ASSERT(result == amountRead);
-        //	start += amountRead;
+        start += amountRead;
         //	ASSERT(start == openFile->Length());
     }
     delete[] buffer;
@@ -327,7 +327,7 @@ void NAppend(char *from, char *to)
 
     // Write the inode back to the disk, because we have changed it
     openFileTo->WriteBack();
-    printf("追加文件成功k\n");
+    printf("追加文件成功\n");
 
     // Close both Nachos files
     delete openFileTo;
