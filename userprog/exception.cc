@@ -91,17 +91,8 @@ void SysCallPuts()
 // 处理系统调用：退出
 void SysCallExit()
 {
-    char str[200];
     int addr = machine->ReadRegister(4);
-    for (int i = 0;; i++)
-    {
-        machine->ReadMem(addr + i, 1, (int *)(str + i));
-        if (str[i] == 0)
-        {
-            break;
-        }
-    }
-    printf("【用户程序】退出：%s\n", addr);
+    printf("【用户程序】退出：%d\n", addr);
     currentThread->Finish();
 }
 
