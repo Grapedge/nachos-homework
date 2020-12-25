@@ -115,8 +115,8 @@ void Consumer(_int which)
   for (;;)
   {
     // 保证取物顺序
-    mutex->P();
     nfull->P();
+    mutex->P();
     ring->Get(message);
     printf("[消费者 %d]取出 %d 号生产者生产的商品 %d\n", (int)which, message->thread_id, message->value);
     // form a string to record the message
