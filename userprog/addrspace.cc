@@ -119,6 +119,7 @@ AddrSpace::AddrSpace(OpenFile *executable)
     for (; i < numPages; i++)
     {
         pageTable[i].virtualPage = i;
+        pageTable[i].physicalPage = -1;
         pageTable[i].valid = FALSE;
         pageTable[i].use = FALSE;
         pageTable[i].dirty = FALSE;
