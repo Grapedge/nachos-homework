@@ -20,8 +20,8 @@
 #include "synch.h"
 #include "system.h"
 
-#define STACK_FENCEPOST 0xdeadbeef // this is put at the top of the
-                                   // execution stack, for detecting
+#define STACK_FENCEPOST 0xdeadbeef // this is put at the top of the  \
+                                   // execution stack, for detecting \
                                    // stack overflows
 
 //----------------------------------------------------------------------
@@ -391,3 +391,8 @@ void Thread::RestoreUserState()
         machine->WriteRegister(i, userRegisters[i]);
 }
 #endif
+
+unsigned int Thread::GetPriority()
+{
+    return priority;
+}
