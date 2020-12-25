@@ -17,6 +17,7 @@
 #include "filesys.h"
 
 #define UserStackSize 1024 // increase this as necessary!
+#define MaxNumPhysPages 5
 
 class AddrSpace
 {
@@ -30,10 +31,16 @@ public:
   // 恢复用户空间状态
   void RestoreState();
   // 获取用户空间 ID
-  unsigned int getSpaceID();
+  unsigned int GetSpaceID();
   // 打印调试用户空间基本信息
   void Print();
 
+  // 查找可置换的页面
+  unsigned int FindPageToReplace();
+  // 替换页面
+  void ReplacePage(int badVAddr);
+  
+  void WriteBack(int page);
 private:
   // 页表数组地址
   TranslationEntry *pageTable;
@@ -41,6 +48,10 @@ private:
   unsigned int numPages;
   // 用户空间 ID
   unsigned int spaceID;
+  // 初始化的帧大小
+  unsigned int frames;
+  // 可执行程序
+  OpenFile *executable;
 };
 
 #endif // ADDRSPACE_H

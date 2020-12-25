@@ -67,7 +67,7 @@ void SysCallExec()
     // 2. 加载页表
     space->RestoreState();
     // 3. 写入当前正在运行的程序
-    machine->WriteRegister(2, space->getSpaceID());
+    machine->WriteRegister(2, space->GetSpaceID());
     // 4. 运行
     machine->Run();
     ASSERT(FALSE);
@@ -88,6 +88,13 @@ void SysCallPrint()
     }
     printf("用户程序打印：%s\n", str);
 }
+
+// 处理缺页错误
+void HandlePageFault()
+{
+    currentThread->space->ReplacePage(machine->ReadRegister(BadVAddrReg));
+}
+
 //----------------------------------------------------------------------
 // ExceptionHandler
 // 	Entry point into the Nachos kernel.  Called when a user program
@@ -123,8 +130,10 @@ void ExceptionHandler(ExceptionType which)
 {
     int type = machine->ReadRegister(2);
 
-    if (which == SyscallException)
+    switch (which)
     {
+
+    case SyscallException:
         switch (type)
         {
         case SC_Halt:
@@ -144,10 +153,14 @@ void ExceptionHandler(ExceptionType which)
         default:
             break;
         }
-    }
-    else
-    {
+        break;
+    case PageFaultException:
+        // 缺页异常，代表该进行页面置换
+        HandlePageFault();
+        break;
+    default:
         printf("Unexpected user mode exception %d %d\n", which, type);
         ASSERT(FALSE);
+        break;
     }
 }

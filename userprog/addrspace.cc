@@ -60,6 +60,7 @@ SwapHeader(NoffHeader *noffH)
 // executable: Noff 格式的可执行文件
 AddrSpace::AddrSpace(OpenFile *executable)
 {
+    this->executable = executable;
     // 生成空间 ID
     spaceID = -1;
     for (int i = 0; i < NumPhysPages && spaceID == -1; i++)
@@ -84,24 +85,40 @@ AddrSpace::AddrSpace(OpenFile *executable)
 
     // 计算地址空间的长度
     size = noffH.code.size + noffH.initData.size + noffH.uninitData.size + UserStackSize; // we need to increase the size
-                                                                                          // to leave room for the stack
+    // to leave room for the stack
+
     numPages = divRoundUp(size, PageSize);
     size = numPages * PageSize;
 
-    ASSERT(numPages <= NumPhysPages); // check we're not trying
-                                      // to run anything too big --
-                                      // at least until we have
-                                      // virtual memory
+    // 初始大小需要：代码大小 + 需要初始化的数据大小
+    frames = divRoundUp(noffH.code.size + noffH.initData.size, PageSize);
+
+    ASSERT(numPages <= NumPhysPages && numFrams <= freeMap->NumClear()); // check we're not trying
+                                                                         // to run anything too big --
+                                                                         // at least until we have
+                                                                         // virtual memory
 
     DEBUG('a', "Initializing address space, num pages %d, size %d\n",
           numPages, size);
     // first, set up the translation
     pageTable = new TranslationEntry[numPages];
-    for (i = 0; i < numPages; i++)
+    unsigned int numFrames = max(MaxNumPhysPages, frames + 1);
+    // 只初始化相应数量的
+    for (i = 0; i < numFrams; i++)
     {
         pageTable[i].virtualPage = i;
         pageTable[i].physicalPage = freeMap->Find();
         pageTable[i].valid = TRUE;
+        pageTable[i].use = FALSE;
+        pageTable[i].dirty = FALSE;
+        pageTable[i].readOnly = FALSE;
+    }
+
+    for (; i < numPages; i++)
+    {
+        pageTable[i].virtualPage = i;
+        pageTable[i].physicalPage = -1;
+        pageTable[i].valid = FALSE;
         pageTable[i].use = FALSE;
         pageTable[i].dirty = FALSE;
         pageTable[i].readOnly = FALSE;
@@ -136,6 +153,7 @@ AddrSpace::AddrSpace(OpenFile *executable)
 AddrSpace::~AddrSpace()
 {
     delete[] pageTable;
+    delete executable;
 }
 
 //----------------------------------------------------------------------
@@ -195,14 +213,14 @@ void AddrSpace::RestoreState()
     machine->pageTableSize = numPages;
 }
 
-unsigned int AddrSpace::getSpaceID()
+unsigned int AddrSpace::GetSpaceID()
 {
     return spaceID;
 }
 
 void AddrSpace::Print()
 {
-    printf("============================ 用户空间 ID：%d ==============================\n", getSpaceID());
+    printf("============================ 用户空间 ID：%d ==============================\n", GetSpaceID());
     printf("页表数量：%d\n", numPages);
     puts("==========================================================================");
     puts("逻辑页号\t物理页号\t是否有效\t是否修改\t是否使用");
@@ -211,4 +229,46 @@ void AddrSpace::Print()
         printf("\t%d\t\t%d\t\t%d\t\t%d\t\t%d\t\t\n", pageTable[i].virtualPage, pageTable[i].physicalPage, pageTable[i].valid, pageTable[i].dirty, pageTable[i].use);
     }
     puts("==========================================================================");
+}
+
+unsigned int AddrSpace::FindPageToReplace()
+{
+    // 寻找第一个可以置换的
+    for (int i = frames; i < numPages; i++)
+    {
+        if (pageTable[i].valid)
+        {
+            return i;
+        }
+    }
+    return -1;
+}
+
+void AddrSpace::ReplacePage(int badVAddr)
+{
+    // 判断缺页是在哪一页中
+    int newPage = badVAddr / PageSize;
+    int toReplace = FindPageToReplace();
+
+    DEBUG('v', "[页面置换] 换出：%d，换入：%d\n", toReplace, newPage);
+    // 将换出的页面写回硬盘
+    WriteBack(toReplace);
+    pageTable[toReplace].valid = FALSE;
+    pageTable[newPage].physicalPage = pageTable[toReplace].physicalPage;
+    pageTable[newPage].valid = TRUE;
+    pageTable[newPage].dirty = FALSE;
+    pageTable[newPage].readOnly = FALSE;
+    // 读取数据到内存
+    executable->ReadAt(&(machine->mainMemory[pageTable[newPage].physicalPage]), PageSize, newPage * PageSize);
+    Print();
+}
+
+void AddrSpace::WriteBack(int page)
+{
+    // 如果被修改了则写回去
+    if (pageTable[page].dirty)
+    {
+        DEBUG('v', "页面 %d 被修改，写回磁盘\n", page);
+        executable->WriteAt(&(machine->mainMemory[pageTable[page].physicalPage]), PageSize, page * PageSize);
+    }
 }
