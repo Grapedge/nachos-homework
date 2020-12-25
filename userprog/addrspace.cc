@@ -260,6 +260,7 @@ void AddrSpace::ReplacePage(int badVAddr)
 {
     int newPage = badVAddr / PageSize;
     int oldPage = FindPageToReplace();
+    printf("新页面：%d, 旧页面： %d\n", newPage, oldPage);
     WriteBack(oldPage);
     pageTable[oldPage].valid = FALSE;
     pageTable[newPage].physicalPage = pageTable[oldPage].physicalPage;
