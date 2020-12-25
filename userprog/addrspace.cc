@@ -127,21 +127,35 @@ AddrSpace::AddrSpace(OpenFile *executable)
     }
 
     // 用于模拟物理内存，machine 是全局变量
-    bzero(machine->mainMemory, size);
+    // bzero(machine->mainMemory, size);
 
     // 初始化数据段装入
+    //主存预加载
     if (noffH.code.size > 0)
     {
         DEBUG('a', "Initializing code segment, at 0x%x, size %d\n",
               noffH.code.virtualAddr, noffH.code.size);
-        executable->ReadAt(&(machine->mainMemory[noffH.code.virtualAddr]),
+
+        //code start from this page
+        int code_page = noffH.code.virtualAddr / PageSize;
+        //calculate physical address using page and offset (0);
+        int code_phy_addr = pageTable[code_page].physicalPage * PageSize;
+        //read memory
+        executable->ReadAt(&(machine->mainMemory[code_phy_addr]),
                            noffH.code.size, noffH.code.inFileAddr);
     }
     if (noffH.initData.size > 0)
     {
         DEBUG('a', "Initializing data segment, at 0x%x, size %d\n",
               noffH.initData.virtualAddr, noffH.initData.size);
-        executable->ReadAt(&(machine->mainMemory[noffH.initData.virtualAddr]),
+        //data start from this page
+        int data_page = noffH.initData.virtualAddr / PageSize;
+        //first data's offset of this page
+        int data_offset = noffH.initData.virtualAddr % PageSize;
+        //calculate physical address using page and offset ;
+        int data_phy_addr = pageTable[data_page].physicalPage * PageSize + data_offset;
+        //read memory
+        executable->ReadAt(&(machine->mainMemory[data_phy_addr]),
                            noffH.initData.size, noffH.initData.inFileAddr);
     }
     Print();
