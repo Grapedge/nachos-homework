@@ -66,8 +66,16 @@ Exec:
 	j	$31
 	.end Exec
 
+	.globl Print
+	.ent	Print
+Print:
+	addiu $2,$0,SC_Print
+	syscall
+	j $31
+	.end Print
+
 	.globl Join
-	.ent	Join
+	.ent Join
 Join:
 	addiu $2,$0,SC_Join
 	syscall

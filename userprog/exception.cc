@@ -32,9 +32,13 @@ void SysCallExec()
     // arg1 => 4 arg2 => 5 arg3 => 6 arg4 =>7
     // 读取文件名
     int addr = machine->ReadRegister(4);
-    for (int i = 0; filename[i] != 0; i++)
+    for (int i = 0;; i++)
     {
         machine->ReadMem(addr + i, 1, (int *)(filename + i));
+        if (filename[i] == 0)
+        {
+            break;
+        }
     }
 
     printf("[Exec] 运行文件名为 %s 的用户程序\n", filename);
@@ -68,6 +72,22 @@ void SysCallExec()
     machine->Run();
     ASSERT(FALSE);
 }
+
+// 处理系统调用：打印
+void SysCallPrint()
+{
+    char str[200];
+    int addr = machine->ReadRegister(4);
+    for (int i = 0;; i++)
+    {
+        machine->ReadMem(addr + i, 1, (int *)(str + i));
+        if (str[i] == 0)
+        {
+            break;
+        }
+    }
+    printf("用户程序打印：%s\n", str);
+}
 //----------------------------------------------------------------------
 // ExceptionHandler
 // 	Entry point into the Nachos kernel.  Called when a user program
@@ -91,6 +111,14 @@ void SysCallExec()
 //	are in machine.h.
 //----------------------------------------------------------------------
 
+void AdvancePC()
+{
+
+    machine->WriteRegister(PrevPCReg, machine->ReadRegister(PCReg));
+    machine->WriteRegister(PCReg, machine->ReadRegister(NextPCReg));
+    machine->WriteRegister(NextPCReg, machine->ReadRegister(NextPCReg) + 4);
+}
+
 void ExceptionHandler(ExceptionType which)
 {
     int type = machine->ReadRegister(2);
@@ -104,8 +132,14 @@ void ExceptionHandler(ExceptionType which)
             interrupt->Halt();
             break;
         case SC_Exec:
-            DEBUG('a', "执行系统调用");
+            DEBUG('a', "执行系统调用: Exec");
             SysCallExec();
+            AdvancePC();
+            break;
+        case SC_Print:
+            DEBUG('a', "执行系统调用: Print");
+            SysCallPrint();
+            AdvancePC();
             break;
         default:
             break;
