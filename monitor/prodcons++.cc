@@ -27,9 +27,9 @@
 #include "ring.h"
 
 #define BUFF_SIZE 2 // the size of the round buffer
-#define N_PROD 2    // the number of producers
-#define N_CONS 2    // the number of consumers
-#define N_MESSG 3   // the number of messages produced by each producer
+#define N_PROD 3    // the number of producers
+#define N_CONS 3    // the number of consumers
+#define N_MESSG 5   // the number of messages produced by each producer
 #define MAX_NAME 16 // the maximum lengh of a name
 
 #define MAXLEN 48
@@ -78,6 +78,7 @@ void Producer(_int which)
 
     nempty->P();
     ring->Put(message);
+    printf("[生产者 %d] 生产商品 %d\n", which, message);
     nfull->V();
 
     currentThread->Yield();
