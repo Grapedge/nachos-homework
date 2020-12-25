@@ -62,6 +62,8 @@ extern void Print(char *file), PerformanceTest(void);
 extern void StartProcess(char *file), ConsoleTest(char *in, char *out);
 extern void MailTest(int networkID);
 extern void SynchTest(void);
+extern void Append(char *from, char *to, int half);
+extern void NAppend(char *from, char *to);
 
 //----------------------------------------------------------------------
 // main
