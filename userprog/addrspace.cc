@@ -95,7 +95,7 @@ AddrSpace::AddrSpace(OpenFile *executable)
     
     unsigned int numFrames = max(MaxNumPhysPages, frames + 1);
 
-    ASSERT(numPages <= NumPhysPages && numFrams <= freeMap->NumClear()); // check we're not trying
+    ASSERT(numPages <= NumPhysPages && numFrames <= freeMap->NumClear()); // check we're not trying
                                                                          // to run anything too big --
                                                                          // at least until we have
                                                                          // virtual memory
@@ -105,7 +105,7 @@ AddrSpace::AddrSpace(OpenFile *executable)
     // first, set up the translation
     pageTable = new TranslationEntry[numPages];
     // 只初始化相应数量的
-    for (i = 0; i < numFrams; i++)
+    for (i = 0; i < numFrames; i++)
     {
         pageTable[i].virtualPage = i;
         pageTable[i].physicalPage = freeMap->Find();
