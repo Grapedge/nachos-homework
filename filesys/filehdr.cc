@@ -217,7 +217,7 @@ bool FileHeader::SetLength(BitMap *freeMap, int size)
             {
                 int dataSectors2[NumIndirect];
                 synchDisk->ReadSector(dataSectors[NumDirect - 1], (char *)dataSectors2);
-                for (int i = numSectors - NumDirect + 1; i < numSectors - NumDirect + 1; i++)
+                for (int i = oldNum - NumDirect + 1; i < numSectors - NumDirect + 1; i++)
                     dataSectors2[i] = freeMap->Find();
                 synchDisk->WriteSector(dataSectors[NumDirect - 1], (char *)dataSectors2);
             }

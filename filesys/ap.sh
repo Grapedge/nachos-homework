@@ -6,4 +6,7 @@
 ./nachos -nap big small
 ./nachos -nap big small
 ./nachos -nap big small
+./nachos -nap big small
+./nachos -nap big small
+./nachos -nap big small
 ./nachos -p small
