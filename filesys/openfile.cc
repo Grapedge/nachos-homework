@@ -109,6 +109,7 @@ int OpenFile::Write(char *into, int numBytes)
 
 int OpenFile::ReadAt(char *into, int numBytes, int position)
 {
+    puts("读取");
     int fileLength = hdr->FileLength();
     int i, firstSector, lastSector, numSectors;
     char *buf;

@@ -262,14 +262,14 @@ void AddrSpace::ReplacePage(int badVAddr)
     pageTable[newPage].valid = TRUE;
     pageTable[newPage].dirty = FALSE;
     pageTable[newPage].readOnly = FALSE;
-    printf("物理内存信息：\n");
-    for (int i = 0; i < MemorySize; i++)
-    {
-        printf("%d ", machine->mainMemory[i]);
-    }
-    puts("");
+    // printf("物理内存信息：\n");
+    // for (int i = 0; i < MemorySize; i++)
+    // {
+    //     printf("%d ", machine->mainMemory[i]);
+    // }
+    // puts("");
     // 读取数据到内存
-    executable->ReadAt(&(machine->mainMemory[pageTable[newPage].physicalPage]), PageSize, newPage * PageSize);
+    executable->ReadAt(machine->mainMemory + pageTable[newPage].physicalPage, PageSize, newPage * PageSize);
     Print();
 }
 
