@@ -78,7 +78,7 @@ void Producer(_int which)
 
     nempty->P();
     ring->Put(message);
-    printf("[生产者 %d] 生产商品 %d\n", which, message);
+    printf("[生产者 %d] 生产商品 %d\n", which, num);
     nfull->V();
 
     currentThread->Yield();
