@@ -230,7 +230,7 @@ void Append(char *from, char *to, int half)
     while ((amountRead = fread(buffer, sizeof(char), TransferSize, fp)) > 0)
     {
         int result;
-        printf("start value: %d,  amountRead %d, ", start, amountRead);
+        printf("start value: %d,  amountRead %d\n", start, amountRead);
         // result = openFile->WriteAt(buffer, amountRead, start);
         result = openFile->Write(buffer, amountRead);
         printf("result of write %d: %s\n", result, buffer);
