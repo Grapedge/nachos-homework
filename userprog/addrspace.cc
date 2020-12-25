@@ -260,43 +260,17 @@ unsigned int AddrSpace::FindPageToReplace()
     return -1;
 }
 
-// void AddrSpace::ReplacePage(int badVAddr)
-// {
-//     // 判断缺页是在哪一页中
-//     int newPage = badVAddr / PageSize;
-//     int toReplace = FindPageToReplace();
-
-//     DEBUG('v', "[页面置换] 换出：%d，换入：%d\n", toReplace, newPage);
-//     // 将换出的页面写回硬盘
-//     WriteBack(toReplace);
-//     pageTable[toReplace].valid = FALSE;
-//     pageTable[newPage].physicalPage = pageTable[toReplace].physicalPage;
-//     pageTable[toReplace].physicalPage = -1;
-//     pageTable[newPage].valid = TRUE;
-//     pageTable[newPage].dirty = FALSE;
-//     pageTable[newPage].readOnly = FALSE;
-//     // printf("物理内存信息：\n");
-//     // for (int i = 0; i < MemorySize; i++)
-//     // {
-//     //     printf("%d ", machine->mainMemory[i]);
-//     // }
-//     // puts("");
-//     // 读取数据到内存
-//     machine->mainMemory + pageTable[newPage].physicalPage;
-//     executable->ReadAt(machine->mainMemory + pageTable[newPage].physicalPage, PageSize, newPage * PageSize);
-//     Print();
-// }
 void AddrSpace::ReplacePage(int badVAddr)
 {
     int newPage = badVAddr / PageSize;
     int oldPage = FindPageToReplace();
-    printf("页置换！%d换出，%d换入\n", oldPage, newPage);
     WriteBack(oldPage);
-    pageTable[oldPage].valid = false;
+    pageTable[oldPage].valid = FALSE;
     pageTable[newPage].physicalPage = pageTable[oldPage].physicalPage;
-    pageTable[newPage].valid = true;
-    pageTable[newPage].dirty = false;
-    pageTable[newPage].readOnly = false;
+    pageTable[oldPage].physicalPage = -1;
+    pageTable[newPage].valid = TRUE;
+    pageTable[newPage].dirty = FALSE;
+    pageTable[newPage].readOnly = FALSE;
 
     executable->ReadAt(&(machine->mainMemory[pageTable[newPage].physicalPage]), PageSize, newPage * PageSize);
 
