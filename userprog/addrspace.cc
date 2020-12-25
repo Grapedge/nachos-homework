@@ -93,9 +93,9 @@ AddrSpace::AddrSpace(OpenFile *executable)
     // 初始大小需要：代码大小 + 需要初始化的数据大小
     frames = divRoundUp(noffH.code.size + noffH.initData.size, PageSize);
 
-    DEBUG('v', "该程序需要：%d 个必须帧，需要 %d 个分页\n", frames, numPages);
+    DEBUG('v', "该程序需要：%d 个帧，需要 %d 个分页\n", frames, numPages);
     unsigned int numFrames = max(MaxNumPhysPages, frames + 1);
-
+    // 实际分配的帧数量
     ASSERT(numFrames <= NumPhysPages && numFrames <= freeMap->NumClear()); // check we're not trying
                                                                            // to run anything too big --
                                                                            // at least until we have
@@ -133,29 +133,25 @@ AddrSpace::AddrSpace(OpenFile *executable)
     //主存预加载
     if (noffH.code.size > 0)
     {
-        DEBUG('a', "Initializing code segment, at 0x%x, size %d\n",
+        DEBUG('v', "Initializing code segment, at 0x%x, size %d\n",
               noffH.code.virtualAddr, noffH.code.size);
 
-        //code start from this page
-        int code_page = noffH.code.virtualAddr / PageSize;
-        //calculate physical address using page and offset (0);
-        int code_phy_addr = pageTable[code_page].physicalPage * PageSize;
-        //read memory
-        executable->ReadAt(&(machine->mainMemory[code_phy_addr]),
+        // 代码页
+        int codePage = noffH.code.virtualAddr / PageSize;
+        // 物理地址
+        int codePhyAddr = pageTable[codePage].physicalPage * PageSize;
+        executable->ReadAt(&(machine->mainMemory[codePhyAddr]),
                            noffH.code.size, noffH.code.inFileAddr);
     }
     if (noffH.initData.size > 0)
     {
-        DEBUG('a', "Initializing data segment, at 0x%x, size %d\n",
+        DEBUG('v', "Initializing data segment, at 0x%x, size %d\n",
               noffH.initData.virtualAddr, noffH.initData.size);
-        //data start from this page
-        int data_page = noffH.initData.virtualAddr / PageSize;
-        //first data's offset of this page
-        int data_offset = noffH.initData.virtualAddr % PageSize;
-        //calculate physical address using page and offset ;
-        int data_phy_addr = pageTable[data_page].physicalPage * PageSize + data_offset;
-        //read memory
-        executable->ReadAt(&(machine->mainMemory[data_phy_addr]),
+        // 数据页
+        int dataPage = noffH.initData.virtualAddr / PageSize;
+        int dataOffset = noffH.initData.virtualAddr % PageSize;
+        int dataPhyAddr = pageTable[dataPage].physicalPage * PageSize + dataOffset;
+        executable->ReadAt(&(machine->mainMemory[dataPhyAddr]),
                            noffH.initData.size, noffH.initData.inFileAddr);
     }
     Print();
