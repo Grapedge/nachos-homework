@@ -99,10 +99,12 @@ public:
 								// file (this interface is simpler
 								// than the UNIX idiom -- lseek to
 								// end of file, tell, lseek back
+	void WriteBack();
 
 private:
 	FileHeader *hdr;	// Header for this file
 	int seekPosition; // Current position within the file
+	int hdrSector;
 };
 
 #endif // FILESYS
