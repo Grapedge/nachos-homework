@@ -17,7 +17,7 @@
 #include "filesys.h"
 
 #define UserStackSize 1024 // increase this as necessary!
-#define MaxNumPhysPages NumPhysPages / 2
+#define MaxNumPhysPages NumPhysPages
 
 class AddrSpace
 {
