@@ -68,11 +68,11 @@ Exec:
 
 	.globl Print
 	.ent	Print
-Print:
-	addiu $2,$0,SC_Print
+Puts:
+	addiu $2,$0,SC_Puts
 	syscall
 	j	$31
-	.end Print
+	.end Puts
 
 	.globl Join
 	.ent	Join

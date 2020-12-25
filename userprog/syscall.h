@@ -21,7 +21,7 @@
 #define SC_Halt 0
 #define SC_Exit 1
 #define SC_Exec 2
-#define SC_Print 3
+#define SC_Puts 3
 #define SC_Join 4
 #define SC_Create 5
 #define SC_Open 6
@@ -59,7 +59,7 @@ typedef int SpaceId;
  */
 SpaceId Exec(char *name);
 
-void Print(char *str);
+void Puts(char *str);
 
 /* Only return once the the user program "id" has finished.  
  * Return the exit status.
