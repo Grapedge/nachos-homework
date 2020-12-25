@@ -93,7 +93,7 @@ AddrSpace::AddrSpace(OpenFile *executable)
     // 初始大小需要：代码大小 + 需要初始化的数据大小
     frames = divRoundUp(noffH.code.size + noffH.initData.size, PageSize);
 
-    DEBUG('v', "该程序需要：%d 个必须帧，需要 %d 个分页，如无虚拟内存仅支持到：%d 个分页\n", frames, numPages, NumPhysPages);
+    DEBUG('v', "该程序需要：%d 个必须帧，需要 %d 个分页\n", frames, numPages);
     unsigned int numFrames = max(MaxNumPhysPages, frames + 1);
 
     ASSERT(numFrames <= NumPhysPages && numFrames <= freeMap->NumClear()); // check we're not trying
@@ -127,9 +127,8 @@ AddrSpace::AddrSpace(OpenFile *executable)
     }
 
     // 用于模拟物理内存，machine 是全局变量
-    bzero(machine->mainMemory, size);
+    // bzero(machine->mainMemory, size);
 
-    printf("内存大小: %d\n", size);
     // 初始化数据段装入
     if (noffH.code.size > 0)
     {
@@ -247,30 +246,46 @@ unsigned int AddrSpace::FindPageToReplace()
     return -1;
 }
 
+// void AddrSpace::ReplacePage(int badVAddr)
+// {
+//     // 判断缺页是在哪一页中
+//     int newPage = badVAddr / PageSize;
+//     int toReplace = FindPageToReplace();
+
+//     DEBUG('v', "[页面置换] 换出：%d，换入：%d\n", toReplace, newPage);
+//     // 将换出的页面写回硬盘
+//     WriteBack(toReplace);
+//     pageTable[toReplace].valid = FALSE;
+//     pageTable[newPage].physicalPage = pageTable[toReplace].physicalPage;
+//     pageTable[toReplace].physicalPage = -1;
+//     pageTable[newPage].valid = TRUE;
+//     pageTable[newPage].dirty = FALSE;
+//     pageTable[newPage].readOnly = FALSE;
+//     // printf("物理内存信息：\n");
+//     // for (int i = 0; i < MemorySize; i++)
+//     // {
+//     //     printf("%d ", machine->mainMemory[i]);
+//     // }
+//     // puts("");
+//     // 读取数据到内存
+//     machine->mainMemory + pageTable[newPage].physicalPage;
+//     executable->ReadAt(machine->mainMemory + pageTable[newPage].physicalPage, PageSize, newPage * PageSize);
+//     Print();
+// }
 void AddrSpace::ReplacePage(int badVAddr)
 {
-    // 判断缺页是在哪一页中
     int newPage = badVAddr / PageSize;
-    int toReplace = FindPageToReplace();
+    int oldPage = FindPageToReplace();
+    printf("页置换！%d换出，%d换入\n", oldPage, newPage);
+    WriteBack(oldPage);
+    pageTable[oldPage].valid = false;
+    pageTable[newPage].physicalPage = pageTable[oldPage].physicalPage;
+    pageTable[newPage].valid = true;
+    pageTable[newPage].dirty = false;
+    pageTable[newPage].readOnly = false;
 
-    DEBUG('v', "[页面置换] 换出：%d，换入：%d\n", toReplace, newPage);
-    // 将换出的页面写回硬盘
-    WriteBack(toReplace);
-    pageTable[toReplace].valid = FALSE;
-    pageTable[newPage].physicalPage = pageTable[toReplace].physicalPage;
-    pageTable[toReplace].physicalPage = -1;
-    pageTable[newPage].valid = TRUE;
-    pageTable[newPage].dirty = FALSE;
-    pageTable[newPage].readOnly = FALSE;
-    // printf("物理内存信息：\n");
-    // for (int i = 0; i < MemorySize; i++)
-    // {
-    //     printf("%d ", machine->mainMemory[i]);
-    // }
-    // puts("");
-    // 读取数据到内存
-    machine->mainMemory + pageTable[newPage].physicalPage;
-    executable->ReadAt(machine->mainMemory + pageTable[newPage].physicalPage, PageSize, newPage * PageSize);
+    executable->ReadAt(&(machine->mainMemory[pageTable[newPage].physicalPage]), PageSize, newPage * PageSize);
+
     Print();
 }
 
