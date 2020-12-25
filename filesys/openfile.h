@@ -101,6 +101,9 @@ public:
 								// end of file, tell, lseek back
 	void WriteBack();
 
+	// 打印该文件的基本信息
+	void Print();
+
 private:
 	FileHeader *hdr;	// Header for this file
 	int seekPosition; // Current position within the file

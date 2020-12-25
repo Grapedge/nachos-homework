@@ -87,6 +87,7 @@ void Print(char *name)
         return;
     }
 
+    openFile->Print();
     buffer = new char[TransferSize];
     while ((amountRead = openFile->Read(buffer, TransferSize)) > 0)
         for (i = 0; i < amountRead; i++)

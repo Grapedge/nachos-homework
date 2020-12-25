@@ -18,6 +18,7 @@
 #include "bitmap.h"
 
 #define NumDirect ((SectorSize - 2 * sizeof(int)) / sizeof(int))
+#define NumIndirect (SectorSize / sizeof(int))
 #define MaxFileSize (NumDirect * SectorSize)
 
 // The following class defines the Nachos "file header" (in UNIX terms,

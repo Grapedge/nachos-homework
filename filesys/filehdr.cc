@@ -43,11 +43,58 @@ bool FileHeader::Allocate(BitMap *freeMap, int fileSize)
     numBytes = fileSize;
     numSectors = divRoundUp(fileSize, SectorSize);
     if (freeMap->NumClear() < numSectors)
-        return FALSE; // not enough space
+        return FALSE;
 
-    for (int i = 0; i < numSectors; i++)
-        dataSectors[i] = freeMap->Find();
+    if (numSectors < NumDirect)
+    {
+        for (int i = 0; i < numSectors; i++)
+            dataSectors[i] = freeMap->Find();
+        dataSectors[NumDirect - 1] = -1;
+    }
+    else
+    {
+        for (int i = 0; i < NumDirect; i++)
+            dataSectors[i] = freeMap->Find(); //最后一项是二级块的地址
+        int dataSectors2[NumIndirect];
+        for (int i = 0; i < numSectors - NumDirect + 1; i++)
+            dataSectors2[i] = freeMap->Find();
+        //将二级索引保存
+        synchDisk->WriteSector(dataSectors[NumDirect - 1], (char *)dataSectors2);
+    }
     return TRUE;
+}
+
+//----------------------------------------------------------------------
+// FileHeader::Deallocate
+// 	De-allocate all the space allocated for data blocks for this file.
+//
+//	"freeMap" is the bit map of free disk sectors
+//----------------------------------------------------------------------
+
+void FileHeader::Deallocate(BitMap *freeMap)
+{
+    if (numSectors < NumDirect)
+        for (int i = 0; i < numSectors; i++)
+        {
+            ASSERT(freeMap->Test((int)dataSectors[i])); // ought to be marked!
+            freeMap->Clear((int)dataSectors[i]);
+        }
+    else
+    {
+        int dataSectors2[NumIndirect];
+        synchDisk->ReadSector(dataSectors[NumDirect - 1], (char *)dataSectors2);
+
+        for (int i = 0; i < NumDirect; i++)
+        {
+            ASSERT(freeMap->Test((int)dataSectors[i])); // ought to be marked!
+            freeMap->Clear((int)dataSectors[i]);
+        }
+        for (int i = 0; i < numSectors - NumDirect + 1; i++)
+        {
+            ASSERT(freeMap->Test((int)dataSectors2[i])); // ought to be marked!
+            freeMap->Clear((int)dataSectors2[i]);
+        }
+    }
 }
 
 //----------------------------------------------------------------------
@@ -102,7 +149,15 @@ void FileHeader::WriteBack(int sector)
 
 int FileHeader::ByteToSector(int offset)
 {
-    return (dataSectors[offset / SectorSize]);
+    int sec = offset / SectorSize;
+    if (sec < NumDirect - 1)
+        return (dataSectors[sec]);
+    else
+    {
+        int dataSectors2[NumIndirect];
+        synchDisk->ReadSector(dataSectors[NumDirect - 1], (char *)dataSectors2);
+        return (dataSectors2[sec - NumDirect + 1]);
+    }
 }
 
 //----------------------------------------------------------------------
@@ -126,21 +181,24 @@ void FileHeader::Print()
     int i, j, k;
     char *data = new char[SectorSize];
 
-    printf("FileHeader contents.  File size: %d.  File blocks:\n", numBytes);
-    for (i = 0; i < numSectors; i++)
-        printf("%d ", dataSectors[i]);
-    printf("\nFile contents:\n");
-    for (i = k = 0; i < numSectors; i++)
+    if (numSectors < NumDirect)
     {
-        synchDisk->ReadSector(dataSectors[i], data);
-        for (j = 0; (j < SectorSize) && (k < numBytes); j++, k++)
-        {
-            if ('\040' <= data[j] && data[j] <= '\176') // isprint(data[j])
-                printf("%c", data[j]);
-            else
-                printf("\\%x", (unsigned char)data[j]);
-        }
-        printf("\n");
+
+        printf("文件大小: %d.  直接索引:\n", numBytes);
+        for (i = 0; i < numSectors; i++)
+            printf("%d ", dataSectors[i]);
+    }
+    else
+    {
+        printf("二级索引：");
+        int dataSectors2[NumIndirect];
+        synchDisk->ReadSector(dataSectors[NumDirect - 1], (char *)dataSectors2);
+        printf("文件大小: %d.  文件直接索引:\n", numBytes);
+        for (i = 0; i < NumDirect - 1; i++)
+            printf("%d ", dataSectors[i]);
+        printf("\n文件二级索引扇区编号：%d ", dataSectors[NumDirect - 1]);
+        for (i = 0; i < numSectors - NumDirect + 1; i++)
+            printf("%d ", dataSectors2[i]);
     }
     delete[] data;
 }
@@ -150,18 +208,28 @@ bool FileHeader::SetLength(BitMap *freeMap, int size)
     if (size > numSectors * SectorSize)
     {
         int oldNum = numSectors;
-        numSectors = divRoundUp(size, SectorSize);
+        numSectors = divRoundUp(len, SectorSize);
         if (freeMap->NumClear() < numSectors - oldNum)
         {
-            puts("错误：已经没有空间进行扩充");
             numSectors = oldNum;
             return false;
         }
-        for (int i = oldNum; i < numSectors; i++)
+        for (int i = oldNum; i < NumDirect - 1 && i < numSectors; i++)
         {
             dataSectors[i] = freeMap->Find();
         }
+        if (numSectors >= NumDirect)
+        {
+            dataSectors[NumDirect - 1] = freeMap->Find();
+            int dataSectors2[NumIndirect];
+            printf("Start %d\n", numSectors - NumDirect);
+            for (int i = 0; i < numSectors - NumDirect + 1; i++)
+                dataSectors2[i] = freeMap->Find();
+            //将二级索引保存
+            synchDisk->WriteSector(dataSectors[NumDirect - 1], (char *)dataSectors2);
+            puts("二级索引扩展成功");
+        }
     }
-    numBytes = size;
+    numBytes = len;
     return true;
 }

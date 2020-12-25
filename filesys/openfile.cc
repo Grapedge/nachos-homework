@@ -205,3 +205,8 @@ void OpenFile::WriteBack()
 {
     hdr->WriteBack(hdrSector);
 }
+
+void OpenFile::Print()
+{
+    hdr->Print();
+}
