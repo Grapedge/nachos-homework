@@ -146,21 +146,21 @@ void ExceptionHandler(ExceptionType which)
         switch (type)
         {
         case SC_Halt:
-            DEBUG('a', "Shutdown, initiated by user program.\n");
+            DEBUG('s', "Shutdown, initiated by user program.\n");
             interrupt->Halt();
             break;
         case SC_Exec:
-            DEBUG('a', "执行系统调用: Exec");
+            DEBUG('s', "执行系统调用: Exec\n");
             SysCallExec();
             AdvancePC();
             break;
         case SC_Puts:
-            DEBUG('a', "执行系统调用: Print");
+            DEBUG('s', "执行系统调用: Puts\n");
             SysCallPuts();
             AdvancePC();
             break;
         case SC_Exit:
-            DEBUG('a', "执行系统调用: Exit");
+            DEBUG('s', "执行系统调用: Exit\n");
             SysCallExit();
             AdvancePC();
             break;

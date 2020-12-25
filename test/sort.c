@@ -31,6 +31,6 @@ int main()
                 A[j] = A[j + 1];
                 A[j + 1] = tmp;
             }
-    Puts("运行结束，退出");
+    Puts("排序程序结束");
     Exit(A[0]); /* and then we're done -- should be 0! */
 }
