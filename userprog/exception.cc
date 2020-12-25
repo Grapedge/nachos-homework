@@ -59,7 +59,6 @@ void SysCallExec()
     interrupt->SetLevel(oldLevel);
     currentThread = thread;
     thread->space = space;
-    delete exec;
 
     // 运行程序
     // 1. 初始化寄存器
