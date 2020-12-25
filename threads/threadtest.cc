@@ -25,7 +25,7 @@ void SimpleThread(_int which)
 {
     for (int num = 0; num < 3; num++)
     {
-        printf("【线程%d】第 %d 次运行，其优先级为 %d\n", (int)which, num, currentThread->GetPriority());
+        printf("【线程%d】第 %d 次运行，其优先级为 %d\n", (int)which, num + 1, currentThread->GetPriority());
         currentThread->Yield();
     }
 }
