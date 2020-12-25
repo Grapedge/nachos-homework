@@ -144,7 +144,7 @@ void ExceptionHandler(ExceptionType which)
         switch (type)
         {
         case SC_Halt:
-            DEBUG('s', "Shutdown, initiated by user program.\n");
+            DEBUG('s', "执行系统调用：ShutDown.\n");
             interrupt->Halt();
             break;
         case SC_Exec:
