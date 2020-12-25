@@ -171,6 +171,7 @@ void FileHeader::Print()
         printf("文件大小: %d.  直接索引:\n", numBytes);
         for (i = 0; i < numSectors; i++)
             printf("%d ", dataSectors[i]);
+        puts("");
     }
     else
     {
