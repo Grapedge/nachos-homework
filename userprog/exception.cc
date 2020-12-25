@@ -25,6 +25,49 @@
 #include "system.h"
 #include "syscall.h"
 
+// 处理系统调用：执行
+void SysCallExec()
+{
+    char filename[200];
+    // arg1 => 4 arg2 => 5 arg3 => 6 arg4 =>7
+    // 读取文件名
+    int addr = machine->ReaddRegister(4);
+    for (int i = 0; filename[i] != 0; i++)
+    {
+        machine->ReadMem(addr + i, 1, (int *)(filename + i));
+    }
+
+    printf("[Exec] 运行文件名为 %s 的用户程序\n", filename);
+
+    // 运行程序
+    OpenFile *exec = fileSystem->Open(filename);
+    if (exec == NULL)
+    {
+        printf("执行程序加载失败，文件名为：%s\n", filename);
+    }
+    // 创建用户空间
+    space = new AddrSpace(exec);
+    // 创建相应的线程用于执行该程序
+    Thread *thread = new Thread(filename);
+    // 关中断，将线程放入就绪队列
+    IntStatus oldLevel = interrupt->SetLevel(IntOff);
+    scheduler->ReadyToRun(currentThread);
+    interrupt->SetLevel(oldLevel);
+    currentThread = thread;
+    thread->space = space;
+    delete exec;
+
+    // 运行程序
+    // 1. 初始化寄存器
+    space->InitRegisters();
+    // 2. 加载页表
+    space->RestoreState();
+    // 3. 写入当前正在运行的程序
+    machine->WriteRegister(2, space->getSpaceID());
+    // 4. 运行
+    machine->Run();
+    ASSERT(FALSE);
+}
 //----------------------------------------------------------------------
 // ExceptionHandler
 // 	Entry point into the Nachos kernel.  Called when a user program
@@ -62,7 +105,7 @@ void ExceptionHandler(ExceptionType which)
             break;
         case SC_Exec:
             DEBUG('a', "执行系统调用");
-            // interrupt->E
+            SysCallExec();
             break;
         default:
             break;
