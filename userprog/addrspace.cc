@@ -62,7 +62,7 @@ AddrSpace::AddrSpace(OpenFile *executable)
 {
     // 生成空间 ID
     spaceID = -1;
-    for (int i = 0; i < NumPhysPage && spaceID < 0; i++)
+    for (int i = 0; i < NumPhysPages && spaceID < 0; i++)
     {
         if (!procs[i])
         {
