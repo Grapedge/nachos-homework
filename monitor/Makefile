@@ -13,6 +13,7 @@ yes
 endef
 
 include Makefile.local
+include ../userprog/Makefile.local
 include ../Makefile.common
 
 endif # MAKEFILE_THREADS
