@@ -259,7 +259,7 @@ void AddrSpace::ReplacePage(int badVAddr)
     puts("写会");
     pageTable[toReplace].valid = FALSE;
     pageTable[newPage].physicalPage = pageTable[toReplace].physicalPage;
-    pageTable[toReplace].physicalPage = -1;
+    // pageTable[toReplace].physicalPage = -1;
     pageTable[newPage].valid = TRUE;
     pageTable[newPage].dirty = FALSE;
     pageTable[newPage].readOnly = FALSE;
