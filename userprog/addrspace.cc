@@ -96,10 +96,10 @@ AddrSpace::AddrSpace(OpenFile *executable)
     DEBUG('v', "该程序需要：%d 个必须帧，需要 %d 个分页，如无虚拟内存仅支持到：%d 个分页\n", frames, numPages, NumPhysPages);
     unsigned int numFrames = max(MaxNumPhysPages, frames + 1);
 
-    ASSERT(numFrames <= freeMap->NumClear()); // check we're not trying
-                                              // to run anything too big --
-                                              // at least until we have
-                                              // virtual memory
+    ASSERT(numFrames <= NumPhysPages && numFrames <= freeMap->NumClear()); // check we're not trying
+                                                                           // to run anything too big --
+                                                                           // at least until we have
+                                                                           // virtual memory
 
     DEBUG('a', "Initializing address space, num pages %d, size %d\n",
           numPages, size);
