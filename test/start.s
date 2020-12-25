@@ -66,8 +66,8 @@ Exec:
 	j	$31
 	.end Exec
 
-	.globl Print
-	.ent	Print
+	.globl Puts
+	.ent	Puts
 Puts:
 	addiu $2,$0,SC_Puts
 	syscall
