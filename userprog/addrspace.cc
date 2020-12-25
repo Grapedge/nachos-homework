@@ -99,8 +99,8 @@ AddrSpace::AddrSpace(OpenFile *executable)
     pageTable = new TranslationEntry[numPages];
     for (i = 0; i < numPages; i++)
     {
-        pageTable[i].virtualPage = freeMap->Find();
-        pageTable[i].physicalPage = i;
+        pageTable[i].virtualPage = i;
+        pageTable[i].physicalPage = freeMap->Find();
         pageTable[i].valid = TRUE;
         pageTable[i].use = FALSE;
         pageTable[i].dirty = FALSE;
@@ -202,7 +202,7 @@ unsigned int AddrSpace::getSpaceID()
 
 void AddrSpace::Print()
 {
-    printf("============================用户空间 ID：%d==============================\n", getSpaceID());
+    printf("============================ 用户空间 ID：%d ==============================\n", getSpaceID());
     printf("页表数量：%d\n", numPages);
     puts("==========================================================================");
     puts("逻辑页号\t物理页号\t是否有效\t是否修改\t是否使用");
