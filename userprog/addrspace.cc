@@ -236,15 +236,15 @@ unsigned int AddrSpace::GetSpaceID()
 
 void AddrSpace::Print()
 {
-    printf("============================ 用户空间 ID：%d ==============================\n", GetSpaceID());
-    printf("页表数量：%d\n", numPages);
-    puts("==========================================================================");
-    puts("逻辑页号\t物理页号\t是否有效\t是否修改\t是否使用");
+    DEBUG('v', "============================ 用户空间 ID：%d ==============================\n", GetSpaceID());
+    DEBUG('v', "页表数量：%d\n", numPages);
+    DEBUG('v', "==========================================================================");
+    DEBUG('v', "逻辑页号\t物理页号\t是否有效\t是否修改\t是否使用\n");
     for (int i = 0; i < numPages; i++)
     {
-        printf("\t%d\t\t%d\t\t%d\t\t%d\t\t%d\t\t\n", pageTable[i].virtualPage, pageTable[i].physicalPage, pageTable[i].valid, pageTable[i].dirty, pageTable[i].use);
+        DEBUG('v', "\t%d\t\t%d\t\t%d\t\t%d\t\t%d\t\t\n", pageTable[i].virtualPage, pageTable[i].physicalPage, pageTable[i].valid, pageTable[i].dirty, pageTable[i].use);
     }
-    puts("==========================================================================");
+    DEBUG('v', "==========================================================================\n");
 }
 
 unsigned int AddrSpace::FindPageToReplace()
