@@ -161,10 +161,6 @@ int OpenFile::WriteAt(char *from, int numBytes, int position)
     if (fileLength == 0)
         return 0;
 
-    if ((position + numBytes) > fileLength)
-    {
-        hdr->SetLength(position + numBytes + 1);
-    }
     DEBUG('f', "Writing %d bytes at %d, from file of length %d.\n",
           numBytes, position, fileLength);
 
