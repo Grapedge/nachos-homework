@@ -85,16 +85,23 @@ void SysCallPuts()
             break;
         }
     }
-    printf("用户程序打印：%s\n", str);
+    printf("【用户程序】打印：%s\n", str);
 }
 
 // 处理系统调用：退出
 void SysCallExit()
 {
-    int status;
+    char str[200];
     int addr = machine->ReadRegister(4);
-    machine->ReadMem(addr, 2, &status);
-    printf("用户程序退出：%d\n", status);
+    for (int i = 0;; i++)
+    {
+        machine->ReadMem(addr + i, 1, (int *)(str + i));
+        if (str[i] == 0)
+        {
+            break;
+        }
+    }
+    printf("【用户程序】退出：%s\n", str);
     currentThread->Finish();
 }
 
