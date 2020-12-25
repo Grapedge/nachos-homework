@@ -270,7 +270,9 @@ void AddrSpace::ReplacePage(int badVAddr)
     // }
     // puts("");
     // 读取数据到内存
+    puts("读取");
     executable->ReadAt(machine->mainMemory + pageTable[newPage].physicalPage, PageSize, newPage * PageSize);
+    puts("读取结束");
     Print();
 }
 
