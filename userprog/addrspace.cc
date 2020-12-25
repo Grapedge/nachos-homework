@@ -64,8 +64,10 @@ AddrSpace::AddrSpace(OpenFile *executable)
     spaceID = -1;
     for (int i = 0; i < NumPhysPages && spaceID < 0; i++)
     {
+        printf("Procs[%d] = %d\n", i, procs[i]);
         if (!procs[i])
         {
+            procs[i] = 1;
             spaceID = i;
         }
     }
