@@ -46,7 +46,7 @@ void SysCallExec()
         printf("执行程序加载失败，文件名为：%s\n", filename);
     }
     // 创建用户空间
-    space = new AddrSpace(exec);
+    AddrSpace *space = new AddrSpace(exec);
     // 创建相应的线程用于执行该程序
     Thread *thread = new Thread(filename);
     // 关中断，将线程放入就绪队列
