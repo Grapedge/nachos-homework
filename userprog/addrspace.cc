@@ -256,6 +256,7 @@ void AddrSpace::ReplacePage(int badVAddr)
     DEBUG('v', "[页面置换] 换出：%d，换入：%d\n", toReplace, newPage);
     // 将换出的页面写回硬盘
     WriteBack(toReplace);
+    puts("写会");
     pageTable[toReplace].valid = FALSE;
     pageTable[newPage].physicalPage = pageTable[toReplace].physicalPage;
     pageTable[toReplace].physicalPage = -1;
