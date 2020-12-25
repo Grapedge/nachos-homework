@@ -315,7 +315,7 @@ void NAppend(char *from, char *to)
     while ((amountRead = openFileFrom->Read(buffer, TransferSize)) > 0)
     {
         int result;
-        printf("start value: %d,  amountRead %d, ", start, amountRead);
+        printf("start value: %d,  amountRead %d\n", start, amountRead);
         //	result = openFile->WriteAt(buffer, amountRead, start);
         result = openFileTo->Write(buffer, amountRead);
         printf("result of write %d: %s\n", result, buffer);
