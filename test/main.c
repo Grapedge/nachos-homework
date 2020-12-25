@@ -3,10 +3,8 @@
 
 int main()
 {
-  puts("用户程序启动");
-  int a, b;
-  scanf("%d%d", &a, &b);
-  printf("%d + %d = %d\n", a, b, a + b);
+  Print("开始执行停机指令！");
   Exec("../test/halt.noff");
-  puts("执行结束");
+  // 不会触达
+  Print("停机指令执行结束");
 }
