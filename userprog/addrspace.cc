@@ -265,7 +265,7 @@ void AddrSpace::ReplacePage(int badVAddr)
     printf("物理内存信息：\n");
     for (int i = 0; i < MemorySize; i++)
     {
-        printf("%d ", machine->mainMemory);
+        printf("%d ", machine->mainMemory[i]);
     }
     puts("");
     // 读取数据到内存
