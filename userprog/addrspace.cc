@@ -95,8 +95,7 @@ AddrSpace::AddrSpace(OpenFile *executable)
 
     unsigned int numFrames = max(MaxNumPhysPages, frames + 1);
 
-    printf("页数：%d, 帧数：%d\n", numPages, numFrames);
-    ASSERT(numPages <= NumPhysPages && numFrames <= freeMap->NumClear()); // check we're not trying
+    ASSERT(numFrames <= freeMap->NumClear()); // check we're not trying
                                                                           // to run anything too big --
                                                                           // at least until we have
                                                                           // virtual memory
