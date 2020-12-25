@@ -192,7 +192,7 @@ bool FileHeader::SetLength(BitMap *freeMap, int size)
     if (size > numSectors * SectorSize)
     {
         int oldNum = numSectors;
-        numSectors = divRoundUp(len, SectorSize);
+        numSectors = divRoundUp(size, SectorSize);
         if (freeMap->NumClear() < numSectors - oldNum)
         {
             numSectors = oldNum;
@@ -214,6 +214,6 @@ bool FileHeader::SetLength(BitMap *freeMap, int size)
             puts("二级索引扩展成功");
         }
     }
-    numBytes = len;
+    numBytes = size;
     return true;
 }
