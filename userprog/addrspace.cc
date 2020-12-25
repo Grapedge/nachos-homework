@@ -201,13 +201,13 @@ unsigned int AddrSpace::getSpaceID()
 
 void AddrSpace::Print()
 {
-    printf("=================用户空间 ID：%d=================\n", getSpaceID());
+    printf("============================用户空间 ID：%d==============================\n", getSpaceID());
     printf("页表数量：%d\n", numPages);
-    puts("=================================================");
+    puts("==========================================================================");
     puts("逻辑页号\t物理页号\t是否有效\t是否修改\t是否使用");
     for (int i = 0; i < numPages; i++)
     {
         printf("\t%d\t\t%d\t\t%d\t\t%d\t\t%d\t\t\n", pageTable[i].virtualPage, pageTable[i].physicalPage, pageTable[i].valid, pageTable[i].dirty, pageTable[i].use);
     }
-    puts("=================================================");
+    puts("==========================================================================");
 }
