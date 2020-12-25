@@ -136,7 +136,7 @@ void ExceptionHandler(ExceptionType which)
             SysCallExec();
             AdvancePC();
             break;
-        case SC_Print:
+        case SC_Puts:
             DEBUG('a', "执行系统调用: Print");
             SysCallPrint();
             AdvancePC();
