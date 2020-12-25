@@ -233,7 +233,7 @@ void Append(char *from, char *to, int half)
         printf("start value: %d,  amountRead %d, ", start, amountRead);
         // result = openFile->WriteAt(buffer, amountRead, start);
         result = openFile->Write(buffer, amountRead);
-        // printf("result of write: %d\n", result);
+        printf("result of write %d: %s\n", result, buffer);
         ASSERT(result == amountRead);
         start += amountRead;
         //	ASSERT(start == openFile->Length());
@@ -315,12 +315,12 @@ void NAppend(char *from, char *to)
     while ((amountRead = openFileFrom->Read(buffer, TransferSize)) > 0)
     {
         int result;
-        //	printf("start value: %d,  amountRead %d, ", start, amountRead);
+        printf("start value: %d,  amountRead %d, ", start, amountRead);
         //	result = openFile->WriteAt(buffer, amountRead, start);
         result = openFileTo->Write(buffer, amountRead);
-        //	printf("result of write: %d\n", result);
+        printf("result of write %d: %s\n", result, buffer);
         ASSERT(result == amountRead);
-        //	start += amountRead;
+        start += amountRead;
         //	ASSERT(start == openFile->Length());
     }
     delete[] buffer;
