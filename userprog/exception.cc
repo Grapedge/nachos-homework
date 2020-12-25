@@ -93,7 +93,7 @@ void SysCallExit()
 {
     int status;
     int addr = machine->ReadRegister(4);
-    machine->ReadMem(addr, sizeof(int), &status);
+    machine->ReadMem(addr, 1, &status);
     printf("用户程序退出：%d\n", status);
     currentThread->Finish();
 }
