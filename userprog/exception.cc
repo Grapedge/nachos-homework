@@ -31,7 +31,7 @@ void SysCallExec()
     char filename[200];
     // arg1 => 4 arg2 => 5 arg3 => 6 arg4 =>7
     // 读取文件名
-    int addr = machine->ReaddRegister(4);
+    int addr = machine->ReadRegister(4);
     for (int i = 0; filename[i] != 0; i++)
     {
         machine->ReadMem(addr + i, 1, (int *)(filename + i));
