@@ -1,3 +1,3 @@
 git add .
-git commit -m "upload"
+git commit -m "lab2"
 git push
