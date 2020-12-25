@@ -205,12 +205,22 @@ bool FileHeader::SetLength(BitMap *freeMap, int size)
         }
         if (numSectors >= NumDirect)
         {
-            dataSectors[NumDirect - 1] = freeMap->Find();
-            int dataSectors2[NumIndirect];
-            for (int i = 0; i < numSectors - NumDirect + 1; i++)
-                dataSectors2[i] = freeMap->Find();
-            //将二级索引保存
-            synchDisk->WriteSector(dataSectors[NumDirect - 1], (char *)dataSectors2);
+            if (oldNum < NumDirect)
+            {
+                dataSectors[NumDirect - 1] = freeMap->Find();
+                int dataSectors2[NumIndirect];
+                for (int i = 0; i < numSectors - NumDirect + 1; i++)
+                    dataSectors2[i] = freeMap->Find();
+                synchDisk->WriteSector(dataSectors[NumDirect - 1], (char *)dataSectors2);
+            }
+            else
+            {
+                int dataSectors2[NumIndirect];
+                synchDisk->ReadSector(dataSectors[NumDirect - 1], (char *)dataSectors2);
+                for (int i = numSectors - NumDirect + 1; i < numSectors - NumDirect + 1; i++)
+                    dataSectors2[i] = freeMap->Find();
+                synchDisk->WriteSector(dataSectors[NumDirect - 1], (char *)dataSectors2);
+            }
             puts("二级索引扩展成功");
         }
     }
