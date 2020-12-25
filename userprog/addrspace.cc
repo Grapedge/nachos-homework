@@ -92,13 +92,13 @@ AddrSpace::AddrSpace(OpenFile *executable)
 
     // 初始大小需要：代码大小 + 需要初始化的数据大小
     frames = divRoundUp(noffH.code.size + noffH.initData.size, PageSize);
-    
+
     unsigned int numFrames = max(MaxNumPhysPages, frames + 1);
 
     ASSERT(numPages <= NumPhysPages && numFrames <= freeMap->NumClear()); // check we're not trying
-                                                                         // to run anything too big --
-                                                                         // at least until we have
-                                                                         // virtual memory
+                                                                          // to run anything too big --
+                                                                          // at least until we have
+                                                                          // virtual memory
 
     DEBUG('a', "Initializing address space, num pages %d, size %d\n",
           numPages, size);
@@ -256,6 +256,7 @@ void AddrSpace::ReplacePage(int badVAddr)
     WriteBack(toReplace);
     pageTable[toReplace].valid = FALSE;
     pageTable[newPage].physicalPage = pageTable[toReplace].physicalPage;
+    pageTable[toReplace].physicalPage = -1;
     pageTable[newPage].valid = TRUE;
     pageTable[newPage].dirty = FALSE;
     pageTable[newPage].readOnly = FALSE;
